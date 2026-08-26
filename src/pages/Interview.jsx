@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MODULES } from '../lib/content.js';
 import { loadLesson } from '../lib/content.js';
-import { useProgress, actionsExt, logMistake } from '../lib/progress.js';
+import { actionsExt, logMistake } from '../lib/progress.js';
 import { Link } from 'react-router-dom';
 
 /* Mock interview: problem -> attempt window -> solution reveal ->
@@ -15,7 +15,6 @@ const RATES = [
 
 export default function Interview() {
   document.body.dataset.level = '3';
-  const p = useProgress();
   const [modFilter, setMod] = useState('all');
   const [tier, setTier] = useState('any');
   const [count, setCount] = useState(3);
@@ -26,7 +25,6 @@ export default function Interview() {
   const [phase, setPhase] = useState('statement'); // statement|solution|done
   const [fuStep, setFu] = useState(0);
   const [results, setResults] = useState([]);
-  const [startedAt, setStartedAt] = useState(0);
 
   /* pool builder - lazy-loads lessons for chosen filters */
   async function buildPool() {
@@ -50,7 +48,7 @@ export default function Interview() {
     // shuffle, take count
     const shuffled = targets.sort(() => Math.random() - 0.5).slice(0, count);
     setPool(targets); setQueue(shuffled); setIdx(0); setPhase('statement');
-    setResults([]); setStartedAt(Date.now()); setBuilding(false);
+    setResults([]); setBuilding(false);
   }
 
   const cur = queue?.[idx];

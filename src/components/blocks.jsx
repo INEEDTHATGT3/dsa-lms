@@ -12,7 +12,6 @@ function MD({ text }) {
     s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     return s;
   }, [text]);
-  // eslint-disable-next-line react/no-danger
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
@@ -76,7 +75,6 @@ export function CodeBlock({ b }) {
 }
 
 export function LangSwitch() {
-  const cur = document.documentElement.dataset.lang || 'cpp';
   const set = l => {
     document.documentElement.dataset.lang = l;
     try { localStorage.setItem('dsa_lang', l); } catch {}

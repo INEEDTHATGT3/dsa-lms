@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { MODULES } from '../lib/content.js';
 import { useProgress } from '../lib/progress.js';
 import { exportAll, importAll } from '../lib/progress.js';

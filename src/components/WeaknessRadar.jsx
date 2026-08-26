@@ -1,4 +1,3 @@
-import React from 'react';
 import { weakestModules, overallAccuracy } from '../lib/analytics.js';
 import { MODULES } from '../lib/content.js';
 import { Link } from 'react-router-dom';
@@ -53,7 +52,7 @@ export default function WeaknessRadar({ progress }) {
         );
       })}
       <p style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 8 }}>
-        Drill weakest module's L2 problem ladder, then re-rate quizzes.
+        Drill weakest module’s L2 problem ladder, then re-rate quizzes.
       </p>
     </div>
   );

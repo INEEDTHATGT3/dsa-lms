@@ -1,4 +1,3 @@
-import React from 'react';
 import { useProgress, srsActions } from '../lib/progress.js';
 import { Link } from 'react-router-dom';
 

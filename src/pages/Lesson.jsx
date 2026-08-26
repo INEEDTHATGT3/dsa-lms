@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { loadLesson, moduleById, LEVEL_META } from '../lib/content.js';
 import { useProgress, actions } from '../lib/progress.js';
@@ -110,6 +110,7 @@ export default function Lesson() {
       {lesson.sections.map((s, i) => (
         <section key={i} className="section" id={`sec-${i}`}>
           <div className="section-header">
+            {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- literal "//" is a design label */}
             <span className="section-num">{String(i + 1).padStart(2, '0')} //</span>
             <h2>{s.title}</h2>
           </div>
@@ -125,6 +126,7 @@ export default function Lesson() {
 
       <section className="section" id="revision">
         <div className="section-header">
+          {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- literal "//" is a design label */}
           <span className="section-num">{String(lesson.sections.length + 1).padStart(2, '0')} //</span>
           <h2>60-second revision card</h2>
         </div>
@@ -161,7 +163,6 @@ export default function Lesson() {
 }
 
 function LevelStrip({ moduleId, level }) {
-  const mod = moduleById(moduleId);
   const p = useProgress();
   return (
     <div className="level-strip">

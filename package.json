@@ -3,10 +3,36 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "A self-paced Data Structures & Algorithms curriculum delivered as a single-page React app - 19 modules, each written at four difficulty tiers.",
+  "license": "MIT",
+  "author": "Dhruv Jaiswal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/INEEDTHATGT3/dsa-lms.git"
+  },
+  "homepage": "https://ineedthatgt3.github.io/dsa-lms/",
+  "bugs": {
+    "url": "https://github.com/INEEDTHATGT3/dsa-lms/issues"
+  },
+  "keywords": [
+    "dsa",
+    "data-structures",
+    "algorithms",
+    "lms",
+    "learning",
+    "react",
+    "vite",
+    "interview-prep",
+    "competitive-programming"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint ."
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -14,7 +40,13 @@
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.5",
+    "globals": "^17.11.0",
     "vite": "^5.4.8"
   }
 }

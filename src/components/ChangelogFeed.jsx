@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /* Changelog feed - loaded lazily from content dir on mount (tiny file) */
 export default function ChangelogFeed() {

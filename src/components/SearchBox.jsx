@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SEARCH_INDEX } from '../lib/content.js';
 
 /* Search across prebuilt small index; input deferred via useDeferredValue

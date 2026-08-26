@@ -1,4 +1,3 @@
-import React from 'react';
 import { useProgress, streak, longestStreak } from '../lib/progress.js';
 
 /* GitHub-style heatmap of study days (last ~17 weeks) + streak counters.

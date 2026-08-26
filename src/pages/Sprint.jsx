@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { MODULES } from '../lib/content.js';
 import { loadLesson } from '../lib/content.js';
 import { useProgress, actionsExt, getSessions } from '../lib/progress.js';
@@ -17,8 +17,6 @@ export default function Sprint() {
   const [pool, setPool] = useState(null);
   const [queue, setQueue] = useState(null);
   const [building, setBuilding] = useState(false);
-
-  const [startedAt, setStartedAt] = useState(0);
   const [remaining, setRemaining] = useState(0);
   const [running, setRunning] = useState(false);
 
@@ -38,6 +36,10 @@ export default function Sprint() {
       });
     }, 1000);
     return () => clearInterval(id);
+  // finishRun reads live state via outcomesRefLive.current (see above), not
+    // this closure, so it doesn't need to be a dependency; adding it would tear
+    // down/recreate the interval every render instead of only when running toggles.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running]);
 
   async function build() {
@@ -62,7 +64,6 @@ export default function Sprint() {
     setQueue(shuffled);
     setOutcomes({});
     setActiveIdx(0);
-    setStartedAt(Date.now());
     setRemaining(minutes * 60);
     setRunning(true);
     setFinished(false);
@@ -80,7 +81,7 @@ export default function Sprint() {
       return i;
     });
   }
-  function outcomesRef(q) { return outcomes; }
+  function outcomesRef(_q) { return outcomes; }
 
   function finishRun() {
     setRunning(false); setFinished(true);
@@ -145,6 +146,9 @@ export default function Sprint() {
           style={{ padding: '12px 0', fontSize: 12 }}>
           {building ? 'Building pool…' : 'Start sprint'}
         </button>
+      
+        {pool && !building &&
+          <p style={{ fontSize: 12, color: 'var(--text-dim)' }}>Pool size: {pool.length}</p>}
       </div>
     </div>
   );

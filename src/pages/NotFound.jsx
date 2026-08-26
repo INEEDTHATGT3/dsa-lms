@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { MODULES } from '../lib/content.js';
 
@@ -6,7 +5,7 @@ export default function NotFound() {
   return (
     <div className="container" style={{ paddingTop: 80, textAlign: 'center' }}>
       <h1 style={{ fontSize: 60, color: 'var(--lvl)' }}>404</h1>
-      <p style={{ color: 'var(--text-dim)' }}>That lesson doesn't exist.</p>
+      <p style={{ color: 'var(--text-dim)' }}>That lesson doesn’t exist.</p>
       <Link to="/" className="level-pill" style={{ display: 'inline-block', marginTop: 12 }}>
         ← Back to Hub
       </Link>

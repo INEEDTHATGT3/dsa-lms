@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useProgress, srsActions } from '../lib/progress.js';
 import { dueCards } from '../lib/srs.js';
-import { loadLesson, LEVEL_META } from '../lib/content.js';
+import { loadLesson } from '../lib/content.js';
 import { Link } from 'react-router-dom';
 
 /* Review queue: due SRS cards one at a time with SM-2 rating buttons.
@@ -18,7 +18,7 @@ export default function Review() {
   document.body.dataset.level = '1';
   const p = useProgress();
   const due = useMemo(() => dueCards(p.srs), [p.srs]);
-  const [idx, setIdx] = useState(0);
+  const idx = useState(0)[0];  // never advances - due[] shrinks around it as cards are rated
   const [cardData, setCardData] = useState(null);   // lesson/problem payload
   const [revealed, setRevealed] = useState(false);
 
@@ -42,7 +42,7 @@ export default function Review() {
           setCardData({ lesson: L, problem: found });
         }).catch(() => {});
     }
-  }, [idx, due.length]);
+  }, [idx, card]);
 
   if (!due.length) return (
     <div className="container" style={{ paddingTop: 80, textAlign: 'center' }}>
@@ -84,7 +84,7 @@ export default function Review() {
           </button>
         )}
 
-        {revealed && <CardContent isRev={isRev} data={cardData} c={c} />}
+        {revealed && <CardContent isRev={isRev} data={cardData} />}
 
         {revealed && (
           <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'center' }}>
@@ -109,7 +109,7 @@ export default function Review() {
   );
 }
 
-function CardContent({ isRev, data, c }) {
+function CardContent({ isRev, data }) {
   if (isRev) {
     const rev = data?.revisionCard || [];
     if (!data) return <p>Loading…</p>;

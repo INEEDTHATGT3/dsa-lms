@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { MODULES, LEVEL_META, moduleProgress } from '../lib/content.js';
-import { useProgress, dueToday, streak, longestStreak } from '../lib/progress.js';
+import { useProgress, dueToday, streak } from '../lib/progress.js';
 import SearchBox from '../components/SearchBox.jsx';
 import ChangelogFeed from '../components/ChangelogFeed.jsx';
 import StreakStrip from '../components/StreakStrip.jsx';
 import MistakeLog from '../components/MistakeLog.jsx';
 import WeaknessRadar from '../components/WeaknessRadar.jsx';
-import { weakestModules, overallAccuracy } from '../lib/analytics.js';
+import { weakestModules } from '../lib/analytics.js';
 import Stats from './Stats.jsx';
 import { Link } from 'react-router-dom';
 
@@ -31,7 +31,6 @@ export default function Hub() {
   const totalDone = countDone(progress);
   const dueN = dueToday(progress.srs);
   const streakN = streak(progress);
-  const bestStreak = longestStreak(progress);
   const openMistakes = (progress.mistakes || []).filter(m => !m.resolved).length;
   const next = nextUp(progress);
 
@@ -62,7 +61,7 @@ export default function Hub() {
 
       {/* Daily plan */}
       <div className="card" style={{ marginBottom: 16 }}>
-        <div className="card-title">TODAY'S PLAN</div>
+        <div className="card-title">TODAY’S PLAN</div>
         <ul className="notes" style={{ fontSize: 14 }}>
           <li>
             {dueN > 0

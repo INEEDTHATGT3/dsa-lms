@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProgress, actionsExt } from '../lib/progress.js';
 
 /* Per-lesson notes journal - autosaved debounced to localStorage store.
@@ -16,6 +16,9 @@ export default function NotesJournal({ lessonId }) {
   useEffect(() => {
     setText((p.notes || {})[lessonId] || '');
     firstRun.current = true;
+  // only re-adopt the saved note when the lesson changes; this lesson's own
+    // autosave commits would otherwise re-fire this and clobber in-progress typing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lessonId]);
 
   function onChange(e) {
