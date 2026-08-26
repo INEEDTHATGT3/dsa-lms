@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { MODULES } from '../lib/content.js';
 import { useProgress } from '../lib/progress.js';
+import { overallAccuracy } from '../lib/analytics.js';
 
 /* Stats dashboard - derived during render from store snapshot
    (rerender-derived-state-no-effect). No effects, no extra state. */
@@ -34,7 +35,8 @@ export default function Stats({ onClose }) {
       <div className="grid-2" style={{ marginTop: 12 }}>
         <BigStat label="Artifacts complete" value={`${totalDone} / 76`} pct={pct} />
         <BigStat label="Problems solved" value={String(solved)} />
-        <BigStat label="MCQs answered" value={String(mcqTotal)} />
+        <BigStat label="MCQs answered" value={String(mcqTotal)}
+          sub={overall !== null ? `accuracy ${overall}%` : undefined} />
         <BigStat label="Modules touched" value={String(rows.filter(r=>r.done>0).length) + ' / 19'} />
       </div>
 
@@ -51,11 +53,12 @@ export default function Stats({ onClose }) {
   );
 }
 
-function BigStat({ label, value, pct }) {
+function BigStat({ label, value, pct, sub }) {
   return (
     <div className="mem-seg" style={{ padding: 16 }}>
       <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--lvl)', fontFamily: 'DM Mono' }}>{value}</div>
       <div className="seg-desc">{label}</div>
+      {sub && <div style={{ fontSize: 11, color: 'var(--accent3)', fontFamily: 'Space Mono', marginTop: 2 }}>{sub}</div>}
       {pct !== undefined && (
         <div style={{ height: 4, background: 'var(--surface2)', borderRadius: 2, marginTop: 8 }}>
           <div style={{ height: '100%', width: pct+'%', background: 'var(--lvl)', borderRadius: 2 }} />

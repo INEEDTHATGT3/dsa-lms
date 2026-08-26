@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { MODULES, LEVEL_META, moduleProgress } from '../lib/content.js';
 import { useProgress, dueToday, streak, longestStreak } from '../lib/progress.js';
 import SearchBox from '../components/SearchBox.jsx';
 import ChangelogFeed from '../components/ChangelogFeed.jsx';
 import StreakStrip from '../components/StreakStrip.jsx';
 import MistakeLog from '../components/MistakeLog.jsx';
+import WeaknessRadar from '../components/WeaknessRadar.jsx';
+import { weakestModules, overallAccuracy } from '../lib/analytics.js';
 import Stats from './Stats.jsx';
 import { Link } from 'react-router-dom';
 
 function countDone(p) {
   return Object.values(p.lessons).filter(l => l.complete).length;
 }
-/* next up: first incomplete level in Striver order */
 function nextUp(p) {
   for (const mod of MODULES) {
     for (let L = 1; L <= 4; L++) {
-      if (!p.lessons[`${mod.id}_L${L}`]?.complete)
-        return { mod, L };
+      if (!p.lessons[`${mod.id}_L${L}`]?.complete) return { mod, L };
     }
   }
   return null;
@@ -60,7 +60,7 @@ export default function Hub() {
     <div className="container">
       <StreakStrip />
 
-      {/* Daily plan widget */}
+      {/* Daily plan */}
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-title">TODAY'S PLAN</div>
         <ul className="notes" style={{ fontSize: 14 }}>
@@ -76,11 +76,28 @@ export default function Hub() {
               </Link>
             </li>
           )}
+          {(() => {
+            const weak = weakestModules(progress, 4, 1)[0];
+            if (!weak) return null;
+            return (
+              <li style={{ color: 'var(--warn)' }}>
+                Weakness drill:{' '}
+                <Link to={`/lesson/${weak.mod?.id}/2`} style={{ color: 'var(--warn)' }}>
+                  {weak.mod?.title}
+                </Link>{' '}
+                — accuracy {weak.pct}% ({weak.right}/{weak.total})
+              </li>
+            );
+          })()}
           {openMistakes > 0 && (
-            <li style={{ color: 'var(--warn)' }}>Clear {openMistakes} logged mistake{openMistakes > 1 ? 's' : ''} below ↓</li>
+            <li style={{ color: 'var(--warn)' }}>
+              Clear {openMistakes} mistake{openMistakes > 1 ? 's' : ''} below ↓
+            </li>
           )}
         </ul>
       </div>
+
+      <WeaknessRadar progress={progress} />
 
       <div style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap' }}>
         <Link to="/review" className="level-pill">Review queue</Link>
