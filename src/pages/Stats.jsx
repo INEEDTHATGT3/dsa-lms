@@ -9,6 +9,7 @@ import { getSessions } from '../lib/progress.js';
    (rerender-derived-state-no-effect). No effects, no extra state. */
 export default function Stats({ onClose }) {
   const p = useProgress();
+  const overall = overallAccuracy(p);
 
   const rows = useMemo(() => MODULES.map(mod => {
     const per = [1,2,3,4].map(L => !!p.lessons[`${mod.id}_L${L}`]?.complete);
@@ -20,11 +21,6 @@ export default function Stats({ onClose }) {
     .reduce((a,l) => a + Object.keys(l.solved||{}).length, 0);
   const mcqTotal = Object.values(p.lessons)
     .reduce((a,l) => a + Object.keys(l.mcq||{}).length, 0);
-  const mcqRight = Object.entries(p.lessons).reduce((a,[id,l]) => {
-    // correctness needs answer keys; count attempts here (accuracy shown in-lesson)
-    return a + Object.keys(l.mcq||{}).length;
-  }, 0) - mcqTotal + mcqTotal;
-
   const pct = Math.round(totalDone / 76 * 100);
 
   return (

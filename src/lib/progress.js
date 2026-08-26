@@ -25,7 +25,7 @@ function migrate(raw) {
 function load() {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY));
-    if (raw && (raw.version === 1 || raw.version === VERSION)) return migrate(raw);
+    if (raw && typeof raw.version === 'number' && raw.version >= 1 && raw.version <= VERSION) return migrate(raw);
     return fresh();
   } catch { return fresh(); }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { MODULES } from '../lib/content.js';
 import { loadLesson } from '../lib/content.js';
 import { useProgress, actionsExt, getSessions } from '../lib/progress.js';
@@ -23,6 +23,8 @@ export default function Sprint() {
   const [running, setRunning] = useState(false);
 
   const [outcomes, setOutcomes] = useState({});   // pid -> solved|failed
+  const outcomesRefLive = useRef(outcomes);
+  useEffect(() => { outcomesRefLive.current = outcomes; }, [outcomes]);
   const [activeIdx, setActiveIdx] = useState(0);  // current problem view
   const [finished, setFinished] = useState(false);
 
@@ -82,10 +84,11 @@ export default function Sprint() {
 
   function finishRun() {
     setRunning(false); setFinished(true);
-    const solved = Object.values(outcomes).filter(o => o === 'solved').length;
+    const live = outcomesRefLive.current;
+    const solved = Object.values(live).filter(o => o === 'solved').length;
     actionsExt.addSession({
       type: 'sprint', at: Date.now(), minutes,
-      attempted: Object.keys(outcomes).length, solved
+      attempted: Object.keys(live).length, solved
     });
   }
 

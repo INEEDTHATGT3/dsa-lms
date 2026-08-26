@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useProgress, srsActions } from '../lib/progress.js';
 import { dueCards } from '../lib/srs.js';
 import { loadLesson, LEVEL_META } from '../lib/content.js';
