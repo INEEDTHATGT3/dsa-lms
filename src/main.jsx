@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import Hub from './pages/Hub.jsx';
 import Lesson from './pages/Lesson.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Review from './pages/Review.jsx';
 import './styles/theme.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -11,6 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Routes>
       <Route path="/" element={<Hub />} />
       <Route path="/lesson/:moduleId/:level" element={<Lesson />} />
+      <Route path="/review" element={<Review />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </HashRouter>

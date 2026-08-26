@@ -1,5 +1,6 @@
 /* Block renderers - React port of renderer/render.js block types */
 import React, { useState, useMemo } from 'react';
+import { logMistake } from '../lib/progress.js';
 
 /* ---------- tiny md-lite: **bold**, `code`, line breaks ---------- */
 function MD({ text }) {
@@ -138,7 +139,12 @@ export function QuizBlock({ lessonId, sectionKey, b, store }) {
 function Mcq({ lessonId, qKey, item, store }) {
   const saved = store.mcq?.[qKey];
   const chosen = saved !== undefined ? saved : null;
-  const pick = i => { if (chosen === null && i !== undefined) store.actions.recordMcq(lessonId, qKey, i); };
+  const pick = i => {
+    if (chosen === null && i !== undefined) {
+      store.actions.recordMcq(lessonId, qKey, i);
+      if (i !== item.answer) logMistake(lessonId, item.q, 'ABCD'[item.answer]);
+    }
+  };
   return (
     <div className="quiz-card">
       <div className="quiz-q"><MD text={item.q} /></div>
