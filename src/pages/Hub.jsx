@@ -101,6 +101,8 @@ export default function Hub() {
 
       <div style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap' }}>
         <Link to="/review" className="level-pill">Review queue</Link>
+        <Link to="/interview" className="level-pill">🎤 Mock interview</Link>
+        <Link to="/sprint" className="level-pill">⏱ Timed sprint</Link>
         <button className="reveal-btn" onClick={() => setShowStats(s => !s)}>
           {showStats ? 'Hide stats' : 'Stats dashboard'}
         </button>

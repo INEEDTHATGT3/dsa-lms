@@ -3,11 +3,11 @@
 import { useSyncExternalStore } from 'react';
 
 const KEY = 'dsa_progress_v1';
-const VERSION = 2;
+const VERSION = 3;
 const DAY = 86400000;
 
 function fresh() {
-  return { version: VERSION, lessons: {}, srs: {}, mistakes: [], days: [] };
+  return { version: VERSION, lessons: {}, srs: {}, mistakes: [], days: [], notes: {}, sessions: [] };
 }
 function migrate(raw) {
   if (!raw || typeof raw !== 'object') return fresh();
@@ -16,7 +16,9 @@ function migrate(raw) {
     lessons: raw.lessons || {},
     srs: raw.srs || {},
     mistakes: raw.mistakes || [],
-    days: raw.days || []
+    days: raw.days || [],
+    notes: raw.notes || {},
+    sessions: raw.sessions || []
   };
   return out;
 }
@@ -72,6 +74,18 @@ export const actions = {
   resetAll() { commit(fresh()); }
 };
 
+/* --- notes & sessions --- */
+export const actionsExt = {
+  saveNote(lessonId, text) {
+    commit({ ...state, notes: { ...state.notes, [lessonId]: text } });
+  },
+  addSession(session) {
+    commit({ ...state, sessions: [session, ...(state.sessions || [])].slice(0, 20) });
+  }
+};
+export function getNote(p, id) { return (p.notes || {})[id] || ''; }
+export function getSessions(p) { return p.sessions || []; }
+
 /* --- srs/mistake mutators re-exported with store access --- */
 import * as srsEngine from './srs.js';
 export const srsActions = {
@@ -126,6 +140,8 @@ const srsActionsBridge = {
 export const logMistake = (lessonId, q, a) => srsActionsBridge.logMistake(lessonId, q, a);
 export const dueToday = srs =>
   Object.values(srs || {}).filter(c => c.due <= new Date().toISOString().slice(0, 10)).length;
+export function importAll(raw) { commit(migrate(raw)); }
+export function exportAll() { return JSON.stringify(state, null, 2); }
 
 /* --- selectors --- */
 export function lessonState(p, id) { return p.lessons[id] || {}; }

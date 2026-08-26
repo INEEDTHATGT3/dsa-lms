@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { loadLesson, moduleById, LEVEL_META } from '../lib/content.js';
 import { useProgress, actions } from '../lib/progress.js';
 import { Block } from '../components/blocks.jsx';
+import NotesJournal from '../components/NotesJournal.jsx';
 
 function PlacementQuiz({ items, lessonId }) {
   const [answers, setAnswers] = useState({});
@@ -141,6 +142,8 @@ export default function Lesson() {
           Solved problems: <strong style={{ color: 'var(--green)' }}>{solvedCount}</strong>
         </p>
       </section>
+
+      <NotesJournal lessonId={lessonId} />
 
       <div className="complete-box">
         <button
