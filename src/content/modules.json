@@ -1,0 +1,239 @@
+{
+  "version": "1.0",
+  "orderSource": "Striver A2Z sheet order; Module 00 is a pre-DSA foundations module inserted per learner request",
+  "problemPool": [
+    "Striver A2Z",
+    "FINAL450 (Babbar)",
+    "local CODES/ folder solutions"
+  ],
+  "tierRule": {
+    "L1": "single pattern, guided drills, no Big-O notation",
+    "L2": "two stacked patterns, formal complexity",
+    "L3": "3+ stacked patterns / optimization-proof chains / design follow-ups",
+    "L4": "constraint-driven CP tricks, heavy machinery"
+  },
+  "modules": [
+    {
+      "id": "foundations",
+      "num": "00",
+      "title": "C++ Foundations & OOPs",
+      "subtitle": "Pre-DSA: syntax, flowcharts→code, memory, functions, OOPs, maths, sieve",
+      "deps": [],
+      "feedsFrom": [
+        "Revision strategy.docx §1.1–1.14",
+        "STEP1/STEP1B notes",
+        "OOPS_*.cpp",
+        "POINTERS*.cpp"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "complexity-stl",
+      "num": "01",
+      "title": "Complexity Analysis + STL",
+      "subtitle": "Big-O mastery, vectors/maps/sets, custom comparators",
+      "deps": [
+        "foundations"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "sorting",
+      "num": "02",
+      "title": "Sorting Techniques",
+      "subtitle": "Selection -> bubble -> insertion -> merge -> quick",
+      "deps": [
+        "complexity-stl"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "arrays",
+      "num": "03",
+      "title": "Arrays [Easy - Medium - Hard]",
+      "subtitle": "Two pointer, sliding window, prefix sum, Kadane",
+      "deps": [
+        "sorting"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "binary-search",
+      "num": "04",
+      "title": "Binary Search [1D, 2D, Search Space]",
+      "subtitle": "Classic BS, BS on answers: Aggressive Cows, Book Allocation, SPOJ EKO/PRATA",
+      "deps": [
+        "arrays"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "strings-basic",
+      "num": "05",
+      "title": "Strings [Basic + Medium]",
+      "subtitle": "Manipulation, hashing on chars, anagrams, palindromes",
+      "deps": [
+        "arrays"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "linked-list",
+      "num": "06",
+      "title": "Linked List [SLL, DLL, Medium, Hard]",
+      "subtitle": "Reversal, cycles, merge, flatten, clone-with-random",
+      "deps": [
+        "strings-basic"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "recursion",
+      "num": "07",
+      "title": "Recursion [PatternWise]",
+      "subtitle": "\"I solve one part, recursion handles the rest\" — subsequences, combinations",
+      "deps": [
+        "linked-list"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "bit-manipulation",
+      "num": "08",
+      "title": "Bit Manipulation",
+      "subtitle": "XOR tricks, masks, Brian Kernighan",
+      "deps": [
+        "recursion"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "stacks-queues",
+      "num": "09",
+      "title": "Stacks & Queues",
+      "subtitle": "Implementations, infix/postfix, monotonic stack",
+      "deps": [
+        "bit-manipulation"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "sliding-two-pointer",
+      "num": "10",
+      "title": "Sliding Window & Two Pointer",
+      "subtitle": "Combined problems, variable windows",
+      "deps": [
+        "stacks-queues"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "heaps",
+      "num": "11",
+      "title": "Heaps",
+      "subtitle": "k-th elements, merge heaps, median stream",
+      "deps": [
+        "sliding-two-pointer"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "greedy",
+      "num": "12",
+      "title": "Greedy Algorithms",
+      "subtitle": "Interval scheduling, N-meetings, jump game",
+      "deps": [
+        "heaps"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "binary-trees",
+      "num": "13",
+      "title": "Binary Trees",
+      "subtitle": "Traversals, diameter, LCA, path sums, serialize",
+      "deps": [
+        "greedy",
+        "recursion"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "bst",
+      "num": "14",
+      "title": "Binary Search Trees",
+      "subtitle": "BST property, kth smallest, LCA in BST, BST↔heap",
+      "deps": [
+        "binary-trees"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "graphs",
+      "num": "15",
+      "title": "Graphs",
+      "subtitle": "BFS/DFS, topo sort, DSU, MST, shortest paths",
+      "deps": [
+        "bst"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "dp",
+      "num": "16",
+      "title": "Dynamic Programming",
+      "subtitle": "1D/2D/knapsack/LIS/strings/partition DP, Kadane family",
+      "deps": [
+        "graphs"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "tries",
+      "num": "17",
+      "title": "Tries",
+      "subtitle": "Insert/search/prefix, XOR-max trie",
+      "deps": [
+        "dp",
+        "bit-manipulation"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "strings-advanced",
+      "num": "18",
+      "title": "Strings [Advanced]",
+      "subtitle": "KMP, Z-algorithm, rabin-karp",
+      "deps": [
+        "tries"
+      ],
+      "status": "active"
+    }
+  ],
+  "levels": [
+    {
+      "level": 1,
+      "name": "EARLY LEARNER",
+      "color": "#a3e635",
+      "promise": "Zero-assumption mental models. Step counting instead of Big-O. Everyday analogies only."
+    },
+    {
+      "level": 2,
+      "name": "INTERVIEW READY",
+      "color": "#60a5fa",
+      "promise": "Formal complexity, standard pattern vocabulary, E/M ladder."
+    },
+    {
+      "level": 3,
+      "name": "MAANG-GRADE",
+      "color": "#f472b6",
+      "promise": "Optimization trade-offs, internals, interviewer follow-up chains."
+    },
+    {
+      "level": 4,
+      "name": "COMPETITIVE",
+      "color": "#f59e0b",
+      "promise": "Constraint math, CP machinery, templates, contest tactics."
+    }
+  ]
+}

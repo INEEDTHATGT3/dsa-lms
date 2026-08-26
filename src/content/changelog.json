@@ -1,0 +1,130 @@
+{
+  "changelog": [
+    {
+      "date": "2026-08-26",
+      "type": "module",
+      "title": "Module 18 Strings [Advanced] live",
+      "detail": "KMP, Z-algorithm, rabin-karp"
+    },
+    {
+      "date": "2026-08-26",
+      "type": "module",
+      "title": "Module 17 Tries live",
+      "detail": "Insert/search/prefix, XOR-max trie"
+    },
+    {
+      "date": "2026-08-26",
+      "type": "module",
+      "title": "Module 16 Dynamic Programming live",
+      "detail": "1D/2D/knapsack/LIS/strings/partition DP, Kadane family"
+    },
+    {
+      "date": "2026-08-26",
+      "type": "module",
+      "title": "Module 15 Graphs live",
+      "detail": "BFS/DFS, topo sort, DSU, MST, shortest paths"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 14 Binary Search Trees live",
+      "detail": "BST property, kth smallest, LCA in BST, BST↔heap"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 13 Binary Trees live",
+      "detail": "Traversals, diameter, LCA, path sums, serialize"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 12 Greedy Algorithms live",
+      "detail": "Interval scheduling, N-meetings, jump game"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 11 Heaps live",
+      "detail": "k-th elements, merge heaps, median stream"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 10 Sliding Window & Two Pointer live",
+      "detail": "Combined problems, variable windows"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 09 Stacks & Queues live",
+      "detail": "Implementations, infix/postfix, monotonic stack"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 08 Bit Manipulation live",
+      "detail": "XOR tricks, masks, Brian Kernighan"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 07 Recursion [PatternWise] live",
+      "detail": "\"I solve one part, recursion handles the rest\" — subsequences, combinations"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 06 Linked List [SLL, DLL, Medium, Hard] live",
+      "detail": "Reversal, cycles, merge, flatten, clone-with-random"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 05 Strings [Basic+Medium] live",
+      "detail": "Arena triage, atoi machine, center-expansion, KMP lps machinery, delta-window anagrams, string big-int math, polynomial hashing + Z-function."
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 04 Binary Search live",
+      "detail": "Predicate discipline, rotated/peak/2D arenas, BS-on-answer doctrine (your 5 local files mapped), LC4 partitions, ternary + value-space counting."
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 03 Arrays live",
+      "detail": "Big-four patterns to monotonic deques, sparse tables, diff arrays, LC 42/31/152/239/862/907."
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 02 Sorting Techniques live",
+      "detail": "Basics to introsort internals, radix/BIT inversions, cyclic sort, external mergesort."
+    },
+    {
+      "date": "2026-08-25",
+      "type": "system",
+      "title": "Hub updates feed added",
+      "detail": "index.html now shows changelog; driven by content/changelog.json."
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 01 Complexity + STL live",
+      "detail": "All four layers: pb_ds, lazy deletion, anti-hash armor."
+    },
+    {
+      "date": "2026-08-25",
+      "type": "module",
+      "title": "Module 00 Foundations & OOPs live",
+      "detail": "Pilot module validating layer system."
+    },
+    {
+      "date": "2026-08-25",
+      "type": "system",
+      "title": "Pipeline online",
+      "detail": "JSON content + Node renderer + quota validator + hub."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSA Layered Study System</title>
+  <script>
+    // restore persisted language before paint (no flicker)
+    try {
+      var l = localStorage.getItem('dsa_lang');
+      if (l) document.documentElement.dataset.lang = l;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
