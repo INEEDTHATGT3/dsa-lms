@@ -17,7 +17,7 @@ A self-paced Data Structures & Algorithms curriculum delivered as a single-page 
 
 ## Features
 
-- **19 modules, 4 tiers each (76 lessons)** — every topic is written once per difficulty level instead of once overall, so the same concept reads differently depending on what the learner is ready for.
+- **18 modules, 4 tiers each (76 lessons)** — every topic is written once per difficulty level instead of once overall, so the same concept reads differently depending on what the learner is ready for.
 - **Dependency-gated curriculum** — each module declares its prerequisite modules; the hub reflects what's actually unlocked instead of a flat list.
 - **Spaced-repetition review** — a review queue and mistake log drive recall practice separate from first-pass lessons.
 - **Timed sprint & interview modes** — drill sets under a clock, with a running pool-size indicator and outcome logging.
