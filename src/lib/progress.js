@@ -3,16 +3,28 @@
 import { useSyncExternalStore } from 'react';
 
 const KEY = 'dsa_progress_v1';
-const VERSION = 3;
+/* Corrupt or future-version state is copied here instead of being thrown away,
+   so a bad read is recoverable rather than a silent wipe of months of work. */
+const BACKUP_KEY = 'dsa_progress_quarantine';
+const VERSION = 4;   // v4: quiz answers keyed by qkey(question) instead of position
 const DAY = 86400000;
 
 function fresh() {
   return { version: VERSION, lessons: {}, srs: {}, mistakes: [], days: [], notes: {}, sessions: [] };
 }
+/* set when loaded state still uses the pre-v4 positional quiz keys */
+let pendingQkeyMigration = false;
+
 function migrate(raw) {
   if (!raw || typeof raw !== 'object') return fresh();
-  const out = {
-    version: VERSION,
+  const from = typeof raw.version === 'number' ? raw.version : 1;
+  const needsQkey = from < 4;
+  if (needsQkey) pendingQkeyMigration = true;
+  return {
+    /* stay on the old version until the async key migration actually lands --
+       otherwise a tab closed mid-migration would look migrated and orphan
+       every stored answer permanently */
+    version: needsQkey ? Math.min(from, 3) : VERSION,
     lessons: raw.lessons || {},
     srs: raw.srs || {},
     mistakes: raw.mistakes || [],
@@ -20,14 +32,33 @@ function migrate(raw) {
     notes: raw.notes || {},
     sessions: raw.sessions || []
   };
-  return out;
 }
-function load() {
+
+function quarantine(text, why) {
   try {
-    const raw = JSON.parse(localStorage.getItem(KEY));
-    if (raw && typeof raw.version === 'number' && raw.version >= 1 && raw.version <= VERSION) return migrate(raw);
+    localStorage.setItem(BACKUP_KEY, JSON.stringify({ why, at: new Date().toISOString(), raw: text }));
+    console.warn(`[progress] ${why}; previous state preserved under "${BACKUP_KEY}"`);
+  } catch { /* storage full or blocked - nothing further we can do */ }
+}
+
+function load() {
+  let text = null;
+  try { text = localStorage.getItem(KEY); } catch { return fresh(); }
+  if (text === null) return fresh();
+  let raw;
+  try { raw = JSON.parse(text); }
+  catch { quarantine(text, 'stored progress was not valid JSON'); return fresh(); }
+  if (!raw || typeof raw !== 'object') {
+    quarantine(text, 'stored progress had an unexpected shape'); return fresh();
+  }
+  if (typeof raw.version !== 'number' || raw.version < 1) {
+    quarantine(text, 'stored progress had no usable version'); return fresh();
+  }
+  if (raw.version > VERSION) {
+    quarantine(text, `stored progress came from a newer build (v${raw.version} > v${VERSION})`);
     return fresh();
-  } catch { return fresh(); }
+  }
+  return migrate(raw);
 }
 
 let state = load();
@@ -35,14 +66,55 @@ const listeners = new Set();
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
-function commit(next) {
-  // auto-stamp study day on ANY progress mutation
-  const day = todayStr();
-  const days = next.days.includes(day) ? next.days : [...next.days, day];
-  state = { ...next, days };
+/* write + notify, without touching the study-day log */
+function persist(next) {
+  state = next;
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
   listeners.forEach(fn => fn());
 }
+function commit(next) {
+  // auto-stamp study day on ANY user-driven progress mutation
+  const day = todayStr();
+  persist({ ...next, days: next.days.includes(day) ? next.days : [...next.days, day] });
+}
+
+/* v3 -> v4: remap positional quiz keys (s<sec>-<blk>-q<i>, place-q<i>) onto
+   content-hashed keys. The map is a build artifact, dynamic-imported so it
+   never enters the main chunk for the overwhelming majority of loads that
+   don't need it. Uses persist() rather than commit() so migrating does not
+   register a fake study day. */
+async function runQkeyMigration() {
+  try {
+    const hasAnswers = Object.values(state.lessons || {})
+      .some(l => l && l.mcq && Object.keys(l.mcq).length);
+    if (!hasAnswers) { persist({ ...state, version: VERSION }); return; }
+    const map = (await import('../content/qkey-map.json')).default;
+    const isNewKey = k => /^q[0-9a-f]{8}$/.test(k);
+    let moved = 0, kept = 0, orphaned = 0;
+    const lessons = { ...state.lessons };
+    for (const [lessonId, st] of Object.entries(lessons)) {
+      if (!st || !st.mcq) continue;
+      const m = map[lessonId.replace('_L', '/L')] || {};
+      const next = {};
+      for (const [k, v] of Object.entries(st.mcq)) {
+        if (isNewKey(k)) { next[k] = v; kept++; }
+        else if (m[k]) { next[m[k]] = v; moved++; }
+        else orphaned++;   // question was edited or removed since it was answered
+      }
+      lessons[lessonId] = { ...st, mcq: next };
+    }
+    persist({ ...state, version: VERSION, lessons });
+    console.info(`[progress] quiz keys migrated to v${VERSION}: ${moved} remapped` +
+      `${kept ? ', ' + kept + ' already current' : ''}` +
+      `${orphaned ? ', ' + orphaned + ' orphaned' : ''}`);
+  } catch (e) {
+    // leave version at 3 so the migration is retried on the next load
+    console.warn('[progress] quiz-key migration deferred:', e);
+  } finally {
+    pendingQkeyMigration = false;
+  }
+}
+if (pendingQkeyMigration) runQkeyMigration();
 
 export function subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); }
 export function getSnapshot() { return state; }
@@ -140,7 +212,10 @@ const srsActionsBridge = {
 export const logMistake = (lessonId, q, a) => srsActionsBridge.logMistake(lessonId, q, a);
 export const dueToday = srs =>
   Object.values(srs || {}).filter(c => c.due <= new Date().toISOString().slice(0, 10)).length;
-export function importAll(raw) { commit(migrate(raw)); }
+export function importAll(raw) {
+  commit(migrate(raw));
+  if (pendingQkeyMigration) runQkeyMigration();   // imported file may predate v4
+}
 export function exportAll() { return JSON.stringify(state, null, 2); }
 
 /* --- selectors --- */

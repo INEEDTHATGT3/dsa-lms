@@ -1,22 +1,6 @@
-# Auto-detect text files and normalize line endings to LF in the repo.
+# Normalize to LF in the repo; check out native on Windows.
+# Files here were mixed CRLF/LF, which silently breaks multi-line tooling patches.
 * text=auto eol=lf
-
-# Explicit text types
-*.js text
-*.jsx text
-*.mjs text
-*.json text
-*.md text
-*.css text
-*.html text
-*.yml text
-*.yaml text
-
-# Binary types - never touch line endings
+*.woff2 binary
 *.png binary
 *.jpg binary
-*.jpeg binary
-*.gif binary
-*.ico binary
-*.woff binary
-*.woff2 binary

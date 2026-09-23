@@ -1,4 +1,5 @@
 /* Block renderers - React port of renderer/render.js block types */
+import { qkey } from '../lib/qkey.js';
 import React, { useState, useMemo } from 'react';
 import { logMistake } from '../lib/progress.js';
 
@@ -129,41 +130,48 @@ export function Compare({ b }) {
 }
 
 /* ---------- quiz (scored, persisted) ---------- */
-export function QuizBlock({ lessonId, sectionKey, b, store }) {
+export function QuizBlock({ lessonId, b, store }) {
   return (b.items||[]).map((it, qi) => (
-    <Mcq key={qi} lessonId={lessonId} qKey={`${sectionKey}-q${qi}`} item={it} store={store} />
+    <Mcq key={qi} lessonId={lessonId} qKey={qkey(it.q)} item={it} store={store} />
   ));
 }
 function Mcq({ lessonId, qKey, item, store }) {
   const saved = store.mcq?.[qKey];
   const chosen = saved !== undefined ? saved : null;
+  const locked = chosen !== null;
+  const stemId = `qstem-${lessonId}-${qKey}`;
   const pick = i => {
-    if (chosen === null && i !== undefined) {
-      store.actions.recordMcq(lessonId, qKey, i);
-      if (i !== item.answer) logMistake(lessonId, item.q, 'ABCD'[item.answer]);
-    }
+    if (locked || i === undefined) return;
+    store.actions.recordMcq(lessonId, qKey, i);
+    if (i !== item.answer) logMistake(lessonId, item.q, 'ABCD'[item.answer]);
   };
   return (
     <div className="quiz-card">
-      <div className="quiz-q"><MD text={item.q} /></div>
-      <div>
+      <div className="quiz-q" id={stemId}><MD text={item.q} /></div>
+      <div role="group" aria-labelledby={stemId}>
         {item.options.map((o, oi) => {
-          const cls = chosen === null ? '' :
+          const cls = !locked ? '' :
             oi === item.answer ? 'correct' : (oi === chosen ? 'wrong' : '');
           return (
-            <div key={oi}
-              className={'quiz-opt ' + cls + (chosen !== null ? ' locked' : '')}
-              onClick={() => pick(oi)}>
+            <button key={oi} type="button"
+              className={'quiz-opt ' + cls + (locked ? ' locked' : '')}
+              onClick={() => pick(oi)}
+              aria-disabled={locked}
+              aria-pressed={chosen === oi}>
               <span className="k">{'ABCD'[oi]}</span><span><MD text={o} /></span>
-            </div>);
+              {locked && oi === item.answer && <span className="sr-only"> (correct answer)</span>}
+            </button>);
         })}
       </div>
-      {chosen !== null && <>
-        <div className={'quiz-explain'} style={{ display: 'block' }}><MD text={item.explain} /></div>
-        <div style={{ fontSize: 11, fontFamily: 'Space Mono', marginTop: 6, color: chosen === item.answer ? 'var(--green)' : 'var(--red)' }}>
-          {chosen === item.answer ? 'CORRECT' : `INCORRECT - answer: ${'ABCD'[item.answer]}`}
-        </div>
-      </>}
+      {/* live region is always mounted so SRs announce the verdict when it appears */}
+      <div aria-live="polite">
+        {locked && <>
+          <div className="quiz-explain" style={{ display: 'block' }}><MD text={item.explain} /></div>
+          <div style={{ fontSize: 11, fontFamily: 'Space Mono', marginTop: 6, color: chosen === item.answer ? 'var(--green)' : 'var(--red)' }}>
+            {chosen === item.answer ? 'CORRECT' : `INCORRECT - answer: ${'ABCD'[item.answer]}`}
+          </div>
+        </>}
+      </div>
     </div>
   );
 }
@@ -245,7 +253,7 @@ export function Block({ b, ctx }) {
     case 'trace': return <Trace b={b} />;
     case 'visual': return <Visual b={b} />;
     case 'compare': return <Compare b={b} />;
-    case 'quiz': return <QuizBlock lessonId={ctx.lessonId} sectionKey={ctx.key} b={b} store={ctx.store} />;
+    case 'quiz': return <QuizBlock lessonId={ctx.lessonId} b={b} store={ctx.store} />;
     case 'problems': return <Problems items={b.items} lessonId={ctx.lessonId} store={ctx.store} />;
     case 'problem': return <Problems items={[b]} lessonId={ctx.lessonId} store={ctx.store} />;
     case 'followup': return <Followup chain={b.chain} />;

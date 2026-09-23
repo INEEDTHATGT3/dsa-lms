@@ -4,6 +4,7 @@ import { loadLesson, moduleById, LEVEL_META } from '../lib/content.js';
 import { useProgress, actions } from '../lib/progress.js';
 import { Block } from '../components/blocks.jsx';
 import NotesJournal from '../components/NotesJournal.jsx';
+import { qkey } from '../lib/qkey.js';
 
 function PlacementQuiz({ items, lessonId }) {
   const [answers, setAnswers] = useState({});
@@ -12,8 +13,8 @@ function PlacementQuiz({ items, lessonId }) {
   const merged = { ...saved, ...answers };
   const answered = Object.keys(merged).length;
   const total = items.length;
-  const right = items.reduce((a, it, i) =>
-    a + (merged[`place-q${i}`] === it.answer ? 1 : 0), 0);
+  const right = items.reduce((a, it) =>
+    a + (merged[qkey(it.q)] === it.answer ? 1 : 0), 0);
 
   return (
     <section className="section" id="placement">
@@ -23,18 +24,23 @@ function PlacementQuiz({ items, lessonId }) {
         <div key={i} className="quiz-card">
           <div className="quiz-q">{i + 1}. {it.q}</div>
           {it.options.map((o, oi) => {
-            const chosen = merged[`place-q${i}`];
-            const cls = chosen === undefined ? '' :
+            const k = qkey(it.q);
+            const chosen = merged[k];
+            const locked = chosen !== undefined;
+            const cls = !locked ? '' :
               oi === it.answer ? 'correct' : (oi === chosen ? 'wrong' : '');
             return (
-              <div key={oi}
-                className={'quiz-opt ' + cls + (chosen !== undefined ? ' locked' : '')}
+              <button key={oi} type="button"
+                className={'quiz-opt ' + cls + (locked ? ' locked' : '')}
+                aria-disabled={locked}
+                aria-pressed={chosen === oi}
                 onClick={() => {
-                  setAnswers(a => ({ ...a, [`place-q${i}`]: oi }));
-                  actions.recordMcq(lessonId, `place-q${i}`, oi);
+                  if (locked) return;
+                  setAnswers(a => ({ ...a, [k]: oi }));
+                  actions.recordMcq(lessonId, k, oi);
                 }}>
                 <span className="k">{'ABCD'[oi]}</span><span>{o}</span>
-              </div>);
+              </button>);
           })}
         </div>
       ))}
@@ -115,11 +121,7 @@ export default function Lesson() {
             <h2>{s.title}</h2>
           </div>
           {s.blocks.map((b, bi) => (
-            <Block key={bi} b={b} ctx={{
-              lessonId,
-              key: `s${i}-${bi}`,
-              store
-            }} />
+            <Block key={bi} b={b} ctx={{ lessonId, store }} />
           ))}
         </section>
       ))}

@@ -37,65 +37,6 @@ const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 export function isDue(card, day = todayStr()) {
   return card && card.due <= day;
 }
-export function isEnrolled(card) { return !!card && card.cnt !== 0; }
-
-/* ---------- store glue ---------- */
-export function makeSrsActions(commit, getSrs) {
-  return {
-    enroll(type, ref, id) {
-      const srs = { ...getSrs() };
-      if (!srs[id]) {
-        srs[id] = { type, ref, ease: 2.5, ivl: 0, due: todayStr(), reps: 0, lapses: 0 };
-        commit(s => ({ ...s, srs }));
-      }
-    },
-    unenroll(id) {
-      const srs = { ...getSrs() };
-      if (srs[id]) { delete srs[id]; commit(s => ({ ...s, srs })); }
-    },
-    rate(id, rating) {
-      const srs = { ...getSrs() };
-      if (srs[id]) srs[id] = rate(srs[id], rating);
-      commit(s => ({ ...s, srs }));
-    },
-    /* enroll/unenroll a solved problem tied to its lesson */
-    onSolvedToggle(lessonId, pid, nowSolved) {
-      const id = `prob:${lessonId}:${pid}`;
-      nowSolved ? this.enroll('prob', { lessonId, pid }, id)
-                : this.unenroll(id);
-    },
-    onLessonComplete(lessonId, done) {
-      const id = `rev:${lessonId}`;
-      done ? this.enroll('rev', { lessonId }, id) : this.unenroll(id);
-    },
-    logMistake(lessonId, q, correctAnswer) {
-      commit(s => ({
-        ...s,
-        mistakes: [...(s.mistakes || []), {
-          id: `m${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
-          lessonId, q, correctAnswer,
-          ts: Date.now(), resolved: false
-        }]
-      }));
-    },
-    resolveMistake(id) {
-      commit(s => ({
-        ...s,
-        mistakes: (s.mistakes || []).map(m =>
-          m.id === id ? { ...m, resolved: true } : m)
-      }));
-    },
-    touchDay() {
-      const day = todayStr();
-      if (!state_has_day(getDaysRaw(), day)) {
-        // no-op here; days tracked via separate field updated in commit wrapper
-      }
-    }
-  };
-}
-function state_has_day(days, day) { return days.includes(day); }
-function getDaysRaw() { return []; }   // replaced by real accessor in progress.js
-
 /* ---------- selectors ---------- */
 export function dueCards(srs, day = todayStr()) {
   return Object.entries(srs || {})

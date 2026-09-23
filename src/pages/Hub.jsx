@@ -102,10 +102,10 @@ export default function Hub() {
         <Link to="/review" className="level-pill">Review queue</Link>
         <Link to="/interview" className="level-pill">🎤 Mock interview</Link>
         <Link to="/sprint" className="level-pill">⏱ Timed sprint</Link>
-        <button className="reveal-btn" onClick={() => setShowStats(s => !s)}>
+        <button className="reveal-btn" aria-expanded={showStats} onClick={() => setShowStats(s => !s)}>
           {showStats ? 'Hide stats' : 'Stats dashboard'}
         </button>
-        <button className="reveal-btn" onClick={() => setShowMistakes(s => !s)}>
+        <button className="reveal-btn" aria-expanded={showMistakes} onClick={() => setShowMistakes(s => !s)}>
           {showMistakes ? 'Hide mistake log' : `Mistake log${openMistakes ? ` (${openMistakes})` : ''}`}
         </button>
       </div>
