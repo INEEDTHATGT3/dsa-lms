@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { MODULES, loadLesson } from '../lib/content.js';
 import { actionsExt, logMistake } from '../lib/progress.js';
 import { CodeBlock } from '../components/blocks.jsx';
+import { shuffle } from '../lib/shuffle.js';
 import { Link } from 'react-router-dom';
 
 /* Mock interview room.
@@ -20,17 +21,6 @@ const RATES = [
 ];
 
 const fmt = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-
-/* Fisher-Yates. `sort(() => Math.random() - 0.5)` is not a uniform shuffle and
-   biases which problems appear -- in a drill tool that quietly skews practice. */
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 export default function Interview() {
   /* side effect belongs in an effect, and the level tint must be undone on exit */

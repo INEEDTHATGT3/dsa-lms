@@ -1,5 +1,6 @@
 /* Block renderers - React port of renderer/render.js block types */
 import { qkey } from '../lib/qkey.js';
+import { shuffledOrder } from '../lib/shuffle.js';
 import React, { useState, useMemo } from 'react';
 import { logMistake } from '../lib/progress.js';
 
@@ -132,24 +133,29 @@ export function Compare({ b }) {
 /* ---------- quiz (scored, persisted) ---------- */
 export function QuizBlock({ lessonId, b, store }) {
   return (b.items||[]).map((it, qi) => (
-    <Mcq key={qi} lessonId={lessonId} qKey={qkey(it.q)} item={it} store={store} />
+    <Mcq key={qi} lessonId={lessonId} item={it} store={store} />
   ));
 }
-function Mcq({ lessonId, qKey, item, store }) {
+/* Options render in a per-question shuffled order (authored answers sit at
+   index 1 ~96% of the time); choices are stored and graded by ORIGINAL index. */
+export function Mcq({ lessonId, item, store, logWrong = true }) {
+  const qKey = qkey(item.q);
   const saved = store.mcq?.[qKey];
   const chosen = saved !== undefined ? saved : null;
   const locked = chosen !== null;
+  const order = shuffledOrder(item.options.length, qKey);
+  const letter = oi => 'ABCD'[order.indexOf(oi)];
   const stemId = `qstem-${lessonId}-${qKey}`;
   const pick = i => {
     if (locked || i === undefined) return;
     store.actions.recordMcq(lessonId, qKey, i);
-    if (i !== item.answer) logMistake(lessonId, item.q, 'ABCD'[item.answer]);
+    if (logWrong && i !== item.answer) logMistake(lessonId, item.q, item.options[item.answer]);
   };
   return (
     <div className="quiz-card">
       <div className="quiz-q" id={stemId}><MD text={item.q} /></div>
       <div role="group" aria-labelledby={stemId}>
-        {item.options.map((o, oi) => {
+        {order.map((oi, pos) => {
           const cls = !locked ? '' :
             oi === item.answer ? 'correct' : (oi === chosen ? 'wrong' : '');
           return (
@@ -158,7 +164,7 @@ function Mcq({ lessonId, qKey, item, store }) {
               onClick={() => pick(oi)}
               aria-disabled={locked}
               aria-pressed={chosen === oi}>
-              <span className="k">{'ABCD'[oi]}</span><span><MD text={o} /></span>
+              <span className="k">{'ABCD'[pos]}</span><span><MD text={item.options[oi]} /></span>
               {locked && oi === item.answer && <span className="sr-only"> (correct answer)</span>}
             </button>);
         })}
@@ -168,7 +174,7 @@ function Mcq({ lessonId, qKey, item, store }) {
         {locked && <>
           <div className="quiz-explain" style={{ display: 'block' }}><MD text={item.explain} /></div>
           <div style={{ fontSize: 11, fontFamily: 'Space Mono', marginTop: 6, color: chosen === item.answer ? 'var(--green)' : 'var(--red)' }}>
-            {chosen === item.answer ? 'CORRECT' : `INCORRECT - answer: ${'ABCD'[item.answer]}`}
+            {chosen === item.answer ? 'CORRECT' : `INCORRECT - answer: ${letter(item.answer)}`}
           </div>
         </>}
       </div>

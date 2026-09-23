@@ -25,6 +25,8 @@ pre,code,.mono{font-family:'DM Mono','Space Mono',monospace}
 nav.toc{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;overflow-x:auto;position:sticky;top:0;z-index:100}
 nav.toc a{color:var(--text-dim);text-decoration:none;padding:12px 13px;font-size:11px;font-family:'Space Mono';letter-spacing:1px;border-bottom:2px solid transparent;white-space:nowrap}
 nav.toc a:hover{color:var(--lvl);border-bottom-color:var(--lvl)}
+nav.toc button{background:none;border:none;border-bottom:2px solid transparent;color:var(--text-dim);padding:12px 13px;font-size:11px;font-family:'Space Mono';letter-spacing:1px;white-space:nowrap;cursor:pointer}
+nav.toc button:hover{color:var(--lvl);border-bottom-color:var(--lvl)}
 .progress-wrap{position:sticky;top:42px;z-index:99;height:3px;background:var(--surface2)}
 .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--lvl),var(--accent))}
 
@@ -41,7 +43,7 @@ nav.toc a:hover{color:var(--lvl);border-bottom-color:var(--lvl)}
 /* cards / sections */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;position:relative}
 .card-title{font-size:12px;font-family:'Space Mono';letter-spacing:2px;color:var(--lvl);text-transform:uppercase;margin-bottom:8px}
-.section{margin-bottom:56px}
+.section{margin-bottom:56px;scroll-margin-top:60px}  /* clear sticky toc + progress bar on TOC jumps */
 .section-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .section-num{font-family:'Space Mono';font-size:11px;color:var(--lvl);letter-spacing:2px}
 .section h2{font-size:24px;color:var(--text-bright);letter-spacing:-.4px}
@@ -57,8 +59,8 @@ pre code{background:none;padding:0;color:inherit}
 .lang-switch{display:inline-flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;vertical-align:middle}
 .lang-switch button{background:var(--surface2);border:none;color:var(--text-dim);font-family:'Space Mono';font-size:10px;padding:4px 10px;cursor:pointer}
 .lang-switch button.on{background:var(--lvl);color:var(--bg);font-weight:700}
-body[data-lang="py"] pre[data-lang="cpp"]{display:none}
-body:not([data-lang="py"]) pre[data-lang="py"]:not(.always){display:none}
+html[data-lang="py"] pre[data-lang="cpp"]{display:none}
+html:not([data-lang="py"]) pre[data-lang="py"]:not(.always){display:none}
 .code-label{display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono';font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin:14px 0 6px}
 
 /* callouts / mantra */

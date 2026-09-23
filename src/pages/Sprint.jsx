@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { MODULES } from '../lib/content.js';
 import { loadLesson } from '../lib/content.js';
 import { useProgress, actionsExt, getSessions } from '../lib/progress.js';
+import { shuffle } from '../lib/shuffle.js';
 
 /* Timed sprint: pick pool -> countdown -> solve via linked platforms or
    local statement view -> mark outcome live -> score report. */
@@ -58,8 +59,7 @@ export default function Sprint() {
                   targets.push({ ...pr, lessonRef: `${m.id}/${L}`, moduleTitle: m.title });
         } catch {}
       }
-    const shuffled = targets.sort(() => Math.random() - 0.5)
-      .slice(0, Math.max(4, Math.floor(minutes / 6)));
+    const shuffled = shuffle(targets).slice(0, Math.max(4, Math.floor(minutes / 6)));
     setPool(targets);
     setQueue(shuffled);
     setOutcomes({});
@@ -228,10 +228,10 @@ export default function Sprint() {
           <button className="reveal-btn"
             style={{ borderColor: 'var(--red)', color: 'var(--red)' }}
             onClick={() => mark(cur.id, 'failed')}>✗ Failed</button>
-          {cur.lc && (
-            <a className="level-pill" target="_blank" rel="noreferrer"
-              href={`https://leetcode.com/problems/`}>
-              Open platform ↗
+          {/* content has only LC numbers, no slugs - link only a real URL */}
+          {cur.url && (
+            <a className="level-pill" target="_blank" rel="noopener noreferrer" href={cur.url}>
+              Open on {cur.platform} ↗
             </a>
           )}
           {activeIdx < queue.length - 1 &&
