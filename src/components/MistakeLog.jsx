@@ -20,7 +20,7 @@ export default function MistakeLog() {
             </button>
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-dim)', fontFamily: 'Space Mono' }}>
-            correct: {m.correctAnswer} ·{' '}
+            correct: <MDish text={m.correctAnswer} /> ·{' '}
             <Link to={`/lesson/${m.lessonId.replace('_L', '/')}`} style={{ color: 'var(--accent3)' }}>
               revisit lesson
             </Link>

@@ -2,42 +2,20 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { loadLesson, moduleById, LEVEL_META } from '../lib/content.js';
 import { useProgress, actions } from '../lib/progress.js';
-import { Block } from '../components/blocks.jsx';
+import { Block, Mcq } from '../components/blocks.jsx';
 import NotesJournal from '../components/NotesJournal.jsx';
+import { qkey } from '../lib/qkey.js';
 
-function PlacementQuiz({ items, lessonId }) {
-  const [answers, setAnswers] = useState({});
-  const p = useProgress();
-  const saved = p.lessons[lessonId]?.mcq || {};
-  const merged = { ...saved, ...answers };
-  const answered = Object.keys(merged).length;
+function PlacementQuiz({ items, lessonId, store }) {
+  const answered = items.filter(it => store.mcq[qkey(it.q)] !== undefined).length;
+  const right = items.filter(it => store.mcq[qkey(it.q)] === it.answer).length;
   const total = items.length;
-  const right = items.reduce((a, it, i) =>
-    a + (merged[`place-q${i}`] === it.answer ? 1 : 0), 0);
 
   return (
     <section className="section" id="placement">
       <div className="section-header"><span className="section-num">00 //</span><h2>Which layer am I?</h2></div>
       <p>Honest answers decide whether this file is your entry point.</p>
-      {items.map((it, i) => (
-        <div key={i} className="quiz-card">
-          <div className="quiz-q">{i + 1}. {it.q}</div>
-          {it.options.map((o, oi) => {
-            const chosen = merged[`place-q${i}`];
-            const cls = chosen === undefined ? '' :
-              oi === it.answer ? 'correct' : (oi === chosen ? 'wrong' : '');
-            return (
-              <div key={oi}
-                className={'quiz-opt ' + cls + (chosen !== undefined ? ' locked' : '')}
-                onClick={() => {
-                  setAnswers(a => ({ ...a, [`place-q${i}`]: oi }));
-                  actions.recordMcq(lessonId, `place-q${i}`, oi);
-                }}>
-                <span className="k">{'ABCD'[oi]}</span><span>{o}</span>
-              </div>);
-          })}
-        </div>
-      ))}
+      {items.map((it, i) => <Mcq key={i} lessonId={lessonId} item={it} store={store} logWrong={false} />)}
       {answered === total && (
         <div id="placement-result" style={{ padding: 14, border: '1px solid var(--lvl-border)', borderRadius: 6, color: 'var(--lvl)', fontFamily: 'Space Mono', fontSize: 13 }}>
           Score {right}/{total} —{' '}
@@ -49,6 +27,8 @@ function PlacementQuiz({ items, lessonId }) {
     </section>
   );
 }
+
+const jump = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 export default function Lesson() {
   const { moduleId, level } = useParams();
@@ -94,10 +74,13 @@ export default function Lesson() {
       <LevelStrip moduleId={moduleId} level={+level} />
     </div>
 
-    <nav className="toc">
+    {/* buttons, not href="#sec-i": under HashRouter a fragment link is a route change (-> 404) */}
+    <nav className="toc" aria-label="Lesson sections">
       {lesson.sections.map((s, i) =>
-        <a key={i} href={`#sec-${i}`}>{String(i + 1).padStart(2, '0')} · {s.title.split('—')[0].trim()}</a>)}
-      <a href="#revision">REV CARD</a>
+        <button key={i} type="button" onClick={() => jump(`sec-${i}`)}>
+          {String(i + 1).padStart(2, '0')} · {s.title.split('—')[0].trim()}
+        </button>)}
+      <button type="button" onClick={() => jump('revision')}>REV CARD</button>
     </nav>
     <div className="progress-wrap"><div className="progress-bar" id="pbar" /></div>
 
@@ -105,7 +88,7 @@ export default function Lesson() {
 
     <div className="container">
       {lesson.placementQuiz?.length >= 5 &&
-        <PlacementQuiz items={lesson.placementQuiz} lessonId={lessonId} />}
+        <PlacementQuiz items={lesson.placementQuiz} lessonId={lessonId} store={store} />}
 
       {lesson.sections.map((s, i) => (
         <section key={i} className="section" id={`sec-${i}`}>
@@ -115,11 +98,7 @@ export default function Lesson() {
             <h2>{s.title}</h2>
           </div>
           {s.blocks.map((b, bi) => (
-            <Block key={bi} b={b} ctx={{
-              lessonId,
-              key: `s${i}-${bi}`,
-              store
-            }} />
+            <Block key={bi} b={b} ctx={{ lessonId, store }} />
           ))}
         </section>
       ))}

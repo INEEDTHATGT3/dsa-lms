@@ -13,7 +13,7 @@ export default function StreakStrip() {
   const d = new Date();
   d.setDate(d.getDate() - 118);
   for (let i = 0; i < 119; i++) {
-    cells.push(d.toISOString().slice(0, 10));
+    cells.push(d.toLocaleDateString('en-CA'));
     d.setDate(d.getDate() + 1);
   }
 
