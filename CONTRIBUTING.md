@@ -17,7 +17,7 @@ npm install
 npm run dev
 ```
 
-Requires Node.js 20+.
+Requires Node.js 20.19+ or 22.12+ (Vite 8).
 
 ## Making a change
 

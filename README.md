@@ -75,7 +75,7 @@ Problem sourcing: Striver A2Z sheet, FINAL450 (Babbar), and a local solutions ar
 
 ## Getting started
 
-Requires Node.js 20+.
+Requires Node.js 20.19+ or 22.12+ (Vite 8).
 
 ```bash
 npm install
