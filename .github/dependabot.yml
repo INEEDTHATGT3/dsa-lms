@@ -6,8 +6,17 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
     groups:
+      # react-dom pins react exactly; bumped apart, each PR fails npm ci (ERESOLVE)
+      react:
+        patterns: ["react", "react-dom"]
       dev-dependencies:
         dependency-type: "development"
+    ignore:
+      # eslint-plugin-react 7.37.x peers eslint <= 9. Drop these once it supports 10.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
